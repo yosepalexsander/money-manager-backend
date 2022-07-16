@@ -47,16 +47,16 @@ exports.register = async (req, res) => {
 
     // create default categories
     await categories.bulkCreate([
-      { name: "Salary", type:"Income", userId: newUser.id },
-      { name: "Bonus", type:"Income", userId: newUser.id },
-      { name: "Food", type:"Expense", userId: newUser.id },
-      { name: "Transport", type:"Expense", userId: newUser.id }
+      { name: "Salary", type: "Income", userId: newUser.id },
+      { name: "Bonus", type: "Income", userId: newUser.id },
+      { name: "Food", type: "Expense", userId: newUser.id },
+      { name: "Transport", type: "Expense", userId: newUser.id }
     ])
 
 
     // generate token
     const token = jwt.sign({ id: users.id }, process.env.TOKEN_KEY);
-    
+
     res.status(200).send({
       status: "success...",
       data: {
@@ -121,7 +121,6 @@ exports.login = async (req, res) => {
         id: userExist.id,
         name: userExist.name,
         email: userExist.email,
-        status: userExist.status,
         token,
       },
     });
@@ -160,7 +159,6 @@ exports.checkAuth = async (req, res) => {
           id: dataUser.id,
           name: dataUser.name,
           email: dataUser.email,
-          status: dataUser.status,
         },
       },
     });
