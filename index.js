@@ -1,12 +1,21 @@
-const express = require("express");
+// import dotenv and call config function to load environment
+require('dotenv').config();
+const express = require('express');
+
+const cors = require('cors');
+
+// Get routes to the variabel
+const router = require('./src/routes');
 
 const app = express();
-const PORT = 8000;
 
-app.get("/", (req, res) => {
-  res.send("hello word");
-});
+const port = 5000;
 
-app.listen(8000, () => {
-  console.log("server running on port:", PORT);
-});
+app.use(express.json());
+app.use(cors())
+
+// Add endpoint grouping and router
+app.use('/api/v1/', router);
+app.use('/uploads', express.static('uploads'));
+
+app.listen(port, () => console.log(`Listening on port ${port}!`));
