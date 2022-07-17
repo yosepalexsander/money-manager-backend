@@ -1,6 +1,5 @@
 const { accounts } = require("../../models");
 
-// Add new account
 exports.addAccount = async (req, res) => {
   try {
     const data = {
@@ -23,7 +22,6 @@ exports.addAccount = async (req, res) => {
   }
 };
 
-// Fetch all account
 exports.getAllAccounts = async (req, res) => {
   try {
     const userId = req.user.id;
@@ -50,7 +48,6 @@ exports.getAllAccounts = async (req, res) => {
   }
 };
 
-// Fetch account by id
 exports.getAccount = async (req, res) => {
   try {
     const { id } = req.params;
@@ -77,7 +74,6 @@ exports.getAccount = async (req, res) => {
   }
 };
 
-// Update account by id
 exports.updateAccount = async (req, res) => {
   try {
     const { id } = req.params;
@@ -112,7 +108,6 @@ exports.updateAccount = async (req, res) => {
   }
 };
 
-// Detele account by id
 exports.deleteAccount = async (req, res) => {
   try {
     const { id } = req.params;

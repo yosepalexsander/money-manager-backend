@@ -1,6 +1,5 @@
 const { categories } = require("../../models");
 
-// Add new category
 exports.addCategory = async (req, res) => {
   try {
     const data = {
@@ -24,7 +23,6 @@ exports.addCategory = async (req, res) => {
   }
 };
 
-// Fetch all categories
 exports.getAllCategories = async (req, res) => {
   try {
     const userId = req.user.id;
@@ -51,7 +49,6 @@ exports.getAllCategories = async (req, res) => {
   }
 };
 
-// Fetch category by id
 exports.getCategory = async (req, res) => {
   try {
     const { id } = req.params;
@@ -78,7 +75,6 @@ exports.getCategory = async (req, res) => {
   }
 };
 
-// Update category by id
 exports.updateCategory = async (req, res) => {
   try {
     const { id } = req.params;
@@ -114,7 +110,6 @@ exports.updateCategory = async (req, res) => {
   }
 };
 
-// Detele category by id
 exports.deleteCategory = async (req, res) => {
   try {
     const { id } = req.params;
