@@ -1,25 +1,19 @@
 // import model
 const { users, accounts, categories } = require("../../models");
 
-// import joi validation
 const Joi = require("joi");
-// import bcrypt
 const bcrypt = require("bcrypt");
-//import jsonwebtoken
 const jwt = require("jsonwebtoken");
 
 exports.register = async (req, res) => {
-  // our validation schema here
   const schema = Joi.object({
     name: Joi.string().min(5).required(),
     email: Joi.string().email().min(6).required(),
     password: Joi.string().min(6).required(),
   });
 
-  // do validation and get error object from schema.validate
   const { error } = schema.validate(req.body);
 
-  // if error exist send validation error message
   if (error)
     return res.status(400).send({
       error: {
@@ -28,41 +22,34 @@ exports.register = async (req, res) => {
     });
 
   try {
-    // we generate salt (random value) with 10 rounds
     const salt = await bcrypt.genSalt(10);
-    // we hash password from request with salt
     const hashedPassword = await bcrypt.hash(req.body.password, salt);
-
     const newUser = await users.create({
       name: req.body.name,
       email: req.body.email,
-      password: hashedPassword
+      password: hashedPassword,
     });
 
-    // create default account
     await accounts.bulkCreate([
       { name: "Cash", userId: newUser.id },
       { name: "Card", userId: newUser.id },
-    ])
+    ]);
 
-    // create default categories
     await categories.bulkCreate([
-      { name: "Salary", type:"Income", userId: newUser.id },
-      { name: "Bonus", type:"Income", userId: newUser.id },
-      { name: "Food", type:"Expense", userId: newUser.id },
-      { name: "Transport", type:"Expense", userId: newUser.id }
-    ])
+      { name: "Salary", type: "income", userId: newUser.id },
+      { name: "Bonus", type: "income", userId: newUser.id },
+      { name: "Food", type: "expense", userId: newUser.id },
+      { name: "Transport", type: "expense", userId: newUser.id },
+    ]);
 
-
-    // generate token
     const token = jwt.sign({ id: users.id }, process.env.TOKEN_KEY);
-    
+
     res.status(200).send({
       status: "success...",
       data: {
         name: newUser.name,
         email: newUser.email,
-        token
+        token,
       },
     });
   } catch (error) {
@@ -75,16 +62,13 @@ exports.register = async (req, res) => {
 };
 
 exports.login = async (req, res) => {
-  // our validation schema here
   const schema = Joi.object({
     email: Joi.string().email().min(6).required(),
     password: Joi.string().min(6).required(),
   });
 
-  // do validation and get error object from schema.validate
   const { error } = schema.validate(req.body);
 
-  // if error exist send validation error message
   if (error)
     return res.status(400).send({
       error: {
@@ -101,10 +85,8 @@ exports.login = async (req, res) => {
         exclude: ["createdAt", "updatedAt"],
       },
     });
-    // compare password between entered from client and from database
     const isValid = await bcrypt.compare(req.body.password, userExist.password);
 
-    // check if not valid then return response with status 400 (bad request)
     if (!isValid) {
       return res.status(400).send({
         status: "failed",
@@ -112,7 +94,6 @@ exports.login = async (req, res) => {
       });
     }
 
-    // generate token
     const token = jwt.sign({ id: userExist.id }, process.env.TOKEN_KEY);
 
     res.status(200).send({
@@ -121,7 +102,6 @@ exports.login = async (req, res) => {
         id: userExist.id,
         name: userExist.name,
         email: userExist.email,
-        status: userExist.status,
         token,
       },
     });
@@ -160,7 +140,6 @@ exports.checkAuth = async (req, res) => {
           id: dataUser.id,
           name: dataUser.name,
           email: dataUser.email,
-          status: dataUser.status,
         },
       },
     });
