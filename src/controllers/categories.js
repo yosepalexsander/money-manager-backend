@@ -1,130 +1,177 @@
 const { categories } = require("../../models");
 
+// Add new category
 exports.addCategory = async (req, res) => {
-  try {
-    const data = {
-      name: req.body.name,
-      type: req.body.type,
-      userId: req.user.id,
-    };
+    try {
 
-    await categories.create(data);
+        const data = {
+            name: req.body.name,
+            type: req.body.type,
+            userId: req.user.id
+          };
 
-    res.send({
-      status: "success",
-      message: "Add category finished",
-    });
-  } catch (error) {
-    console.log(error);
-    res.send({
-      status: "failed",
-      message: "Server Error",
-    });
-  }
-};
+        await categories.create(data)
 
-exports.getAllCategories = async (req, res) => {
-  try {
-    const userId = req.user.id;
+        res.send({
+            status: 'success',
+            message: 'Add category finished'
+        })
+    } catch (error) {
+        console.log(error)
+        res.send({
+            status: 'failed',
+            message: 'Server Error'
+        })
+    }
+}
 
-    const categoriesData = await categories.findAll({
-      where: {
-        userId,
-      },
-      attributes: {
-        exclude: ["createdAt", "updatedAt"],
-      },
-    });
+// Fetch all categories income
+exports.getAllCategoriesIncome = async (req, res) => {
+    try {
 
-    res.send({
-      status: "success",
-      data: categoriesData,
-    });
-  } catch (error) {
-    console.log(error);
-    res.send({
-      status: "failed",
-      message: "Server Error",
-    });
-  }
-};
+        const userId = req.user.id
 
+        const categoriesData = await categories.findAll({
+            where: {
+                userId,
+                type:"Income"
+            },
+            attributes: {
+                exclude: ['createdAt', 'updatedAt']
+            }
+        })
+
+        res.send({
+            status: 'success',
+            data: categoriesData
+        })
+    } catch (error) {
+        console.log(error)
+        res.send({
+            status: 'failed',
+            message: 'Server Error'
+        })
+    }
+}
+
+// Fetch all categories expenses
+exports.getAllCategoriesExpenses = async (req, res) => {
+    try {
+
+        const userId = req.user.id
+
+        const categoriesData = await categories.findAll({
+            where: {
+                userId,
+                type:"Expenses"
+            },
+            attributes: {
+                exclude: ['createdAt', 'updatedAt']
+            }
+        })
+
+        res.send({
+            status: 'success',
+            data: categoriesData
+        })
+    } catch (error) {
+        console.log(error)
+        res.send({
+            status: 'failed',
+            message: 'Server Error'
+        })
+    }
+}
+
+// Fetch category by id
 exports.getCategory = async (req, res) => {
-  try {
-    const { id } = req.params;
+    try {
+        const { id } = req.params
 
-    const categoryData = await categories.findOne({
-      where: {
-        id,
-      },
-      attributes: {
-        exclude: ["createdAt", "updatedAt"],
-      },
-    });
+        const categoryData = await categories.findOne({
+            where: {
+                id
+            },
+            attributes: {
+                exclude: ['createdAt', 'updatedAt']
+            }
+        })
 
-    res.send({
-      status: "success",
-      data: categoryData,
-    });
-  } catch (error) {
-    console.log(error);
-    res.send({
-      status: "failed",
-      message: "Server Error",
-    });
-  }
-};
+        res.send({
+            status: 'success',
+            data: categoryData
+        })
+    } catch (error) {
+        console.log(error)
+        res.send({
+            status: 'failed',
+            message: 'Server Error'
+        })
+    }
+}
 
+// Update category by id
 exports.updateCategory = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const data = {
-      name: req.body.name,
-      type: req.body.type,
-    };
+    try {
+        const { id } = req.params
 
-    await categories.update(data, { where: { id } });
+        const data = {
+            name: req.body.name,
+            type: req.body.type
+        }
 
-    const categoryData = await categories.findOne({
-      where: {
-        id,
-      },
-      attributes: {
-        exclude: ["createdAt", "updatedAt"],
-      },
-    });
 
-    res.send({
-      status: "success",
-      message: `Update category id: ${id} finished`,
-      data: {
-        category: categoryData,
-      },
-    });
-  } catch (error) {
-    console.log(error);
-    res.send({
-      status: "failed",
-      message: "Server Error",
-    });
-  }
-};
+        await categories.update(data, {
+            where: {
+                id
+            }
+        })
 
+        const categoryData = await categories.findOne({
+            where: {
+                id
+            },
+            attributes: {
+                exclude: ['createdAt', 'updatedAt']
+            }
+        })
+
+        res.send({
+            status: 'success',
+            message: `Update category id: ${id} finished`,
+            data: {
+                category: categoryData
+            }
+        })
+    } catch (error) {
+        console.log(error)
+        res.send({
+            status: 'failed',
+            message: 'Server Error'
+        })
+    }
+}
+
+// Detele category by id
 exports.deleteCategory = async (req, res) => {
-  try {
-    const { id } = req.params;
+    try {
+        const { id } = req.params
 
-    await categories.destroy({ where: { id } });
+        await categories.destroy({
+            where: {
+                id
+            }
+        })
 
-    res.send({
-      status: "success",
-      message: `Delete category id: ${id} finished`,
-    });
-  } catch (error) {
-    console.log(error);
-    res.send({
-      status: "failed",
-      message: "Server Error",
-    });
-  }
-};
+        res.send({
+            status: 'success',
+            message: `Delete category id: ${id} finished`
+        })
+    } catch (error) {
+        console.log(error)
+        res.send({
+            status: 'failed',
+            message: 'Server Error'
+        })
+    }
+}
